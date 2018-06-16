@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BeanNan~Blog</title>
+  
+  <!-- meta -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- css -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="css/pace.css">
+  <link rel="stylesheet" href="css/custom.css">
+  
+  <!-- js -->
+  <script src="js/jquery-2.1.3.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/pace.min.js"></script>
+  <script src="js/modernizr.custom.js"></script>
+</head>
+
+<body>
+<div class="container">
+  <header id="site-header">
+    <div class="row">
+      <div class="col-md-4 col-sm-5 col-xs-8">
+        <div class="logo">
+          <h1><a href="index.html"><b>BeanNan</b></a></h1>
+        </div>
+      </div><!-- col-md-4 -->
+      <div class="col-md-8 col-sm-7 col-xs-4">
+        <nav class="main-nav" role="navigation">
+          <div class="navbar-header">
+            <button type="button" id="trigger-overlay" class="navbar-toggle">
+              <span class="ion-navicon"></span>
+            </button>
+          </div>
+          
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="cl-effect-11"><a href="index.html" data-hover="首页">首页</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </nav>
+        <div id="header-search-box">
+          <a id="search-menu" href="#"><span id="search-icon" class="ion-ios-search-strong"></span></a>
+          <div id="search-form" class="search-form">
+            <form role="search" method="get" id="searchform" action="#">
+              <input type="search" placeholder="搜索" required>
+              <button type="submit"><span class="ion-ios-search-strong"></span></button>
+            </form>
+          </div>
+        </div>
+      </div><!-- col-md-8 -->
+    </div>
+  </header>
+</div>
+
+<div class="content-body">
+  <div class="container">
+    <div class="row">
+      <main class="col-md-8 test" id="articles">
+      
+      </main>
+      <aside class="col-md-4">
+        <div class="widget widget-recent-posts">
+          <h3 class="widget-title">最新文章</h3>
+          
+          <ul id="lastArticles">
+          
+          </ul>
+        
+        
+        </div>
+        <div class="widget widget-category">
+          <h3 class="widget-title">分类</h3>
+          <ul id="categorys">
+          
+          </ul>
+        </div>
+        <div class="widget widget-tag-cloud">
+          <h3 class="widget-title">标签云</h3>
+          <ul id="tags">
+          
+          
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<footer id="site-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="copyright">BeanNan
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile Menu -->
+<div class="overlay overlay-hugeinc">
+  <button type="button" class="overlay-close"><span class="ion-ios-close-empty"></span></button>
+  <nav>
+    <ul>
+      <li><a href="index.html">首页</a></li>
+      <li><a href="blog-list.html">博客</a></li>
+      <li><a href="about.html">关于</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+</div>
+
+<script src="js/script.js"></script>
+<script>
+  
+  $(() => {
+    function getQueryStringArgs() {
+      var qs = (location.search.length > 0 ? location.search.substring(1) : ""),
+          args = {},
+          items = qs.length ? qs.split("&") : [],
+          item = null,
+          name = null,
+          value = null,
+          i = 0,
+          len = items.length;
+      for (i = 0; i < len; i++) {
+        item = items[i].split("=");
+        name = decodeURIComponent(item[0]);
+        value = decodeURIComponent(item[1]);
+        if (name.length) {
+          args[name] = value;
+        }
+      }
+      return args;
+    }
+    
+    let args = getQueryStringArgs();
+    let page = args['page'];
+    if (page === undefined) {
+      page = 1;
+    }
+    
+    $.get("http://localhost:8082/articles?page=" + page + "&limit=4", function (result) {
+      let data = result.data;
+      let count = result.count;
+      let page_size = parseInt(count / 4);
+      page_size = page_size === 0 ? 1 : page_size;
+      let up_page = page - 1 === 0 ? 1 : page_size - 1;
+      let down_page = page + 1 >= page_size ? page_size : page + 1;
+      console.log(down_page);
+      let articlesHTML = "";
+      for (let i = 0; i < data.length; i++) {
+        let article = data[i];
+        let time = new Date(article.update_time).toLocaleDateString();
+        articlesHTML += "<article class=\"post post-1\">\n" +
+            "          <header class=\"entry-header\">\n" +
+            "            <h1 class=\"entry-title\">\n" +
+            "              <a href=\"single.html?article_id=" + article.article_id + "\">" + article.article_name + "</a>\n" +
+            "            </h1>\n" +
+            "            <div class=\"entry-meta\">\n" +
+            "              <span class=\"post-category\"><a href=\"#\">" + article.category.category_name + "</a></span>\n" +
+            "              <span class=\"post-date\"><a href=\"#\"><time class=\"entry-date\"\n" +
+            "                                                        >" + time + "</time></a></span>\n" +
+            "              <span class=\"post-author\"><a href=\"#\">BeanNan</a></span>\n" +
+            
+            "              <span class=\"views-count\"><a href=\"#\">" + article.read_num + "阅读</a></span>\n" +
+            "            </div>\n" +
+            "          </header>\n" +
+            "          \n" +
+            "        </article>";
+      }
+      articlesHTML += "<div class=\"read-more cl-effect-14\">\n" +
+          "          <a href=\"index.html?page=" + up_page + "\">上一页</a>\n" +
+          "          <span class=\"current\">第 " + page + " 页 / 共 " + page_size + " 页</span>\n" +
+          "          <a href=\"index.html?page=" + down_page + "\">下一页</a>\n" +
+          "        </div>";
+      $("#articles").html(articlesHTML);
+    });
+    console.log(page);
+    //获取最新文章
+    $.get("http://localhost:8082/articlelast", function (result) {
+      let data = result.data;
+      let lastHTML = "";
+      for (let i = 0; i < data.length; i++) {
+        let article = data[i];
+        lastHTML += "<li>\n" +
+            "              <a href=\"single.html?article_id=" + article.article_id + "\">" + article.article_name + "</a>\n" +
+            "            </li>";
+      }
+      
+      $("#lastArticles").html(lastHTML);
+      
+    });
+    //获取分类
+    $.get("http://localhost:8082/categorys", function (result) {
+      let data = result.data;
+      let lastHTML = "";
+      for (let i = 0; i < data.length; i++) {
+        let category = data[i];
+        lastHTML += "<li>\n" +
+            "              <a href=\"#\">" + category.category_name + " <span class=\"post-count\"></span></a>\n" +
+            "            </li>";
+      }
+      
+      $("#categorys").html(lastHTML);
+      
+      $.get("http://localhost:8082/tags", function (result) {
+        let data = result.data;
+        let lastHTML = "";
+        for (let i = 0; i < data.length; i++) {
+          let tag = data[i];
+          lastHTML += "<li>\n" +
+              "              <a href=\"#\">" + tag.tag_name + "</a>\n" +
+              "            </li>";
+        }
+        
+        $("#tags").html(lastHTML);
+        
+      })
+    });
+  });
+</script>
+
+</body>
+</html>
